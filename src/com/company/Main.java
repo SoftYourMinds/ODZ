@@ -17,17 +17,24 @@ import java.util.HashMap;
 назва книги, ціна, кількість, вікові обмеження(2-5),
 функціонал:
 a) знайти назви книг, які підходять дітям від Х до У років;
-F,j
+b) дізнатися вартість найбільш дешевої книги і її найменування;
+c) знайти назви книг, які за вартістю не перевищують x грн. і підходять дитині віком від a до b років. Значення x, a, b ввести з терміналу.
+
+
  */
 public class Main {
 
     public static void main(String[] args) {
         Controller controller =  new Controller();
-        System.out.println(controller.addBook("HUCK",23.33,33, 2,6));
-        System.out.println(controller.editBook("just", "HUK",3.33,3,5,7));
-        System.out.println(controller.deleleBook("HUCK"));
-        System.out.println(controller.getBook("HUKds"));
+        System.out.println(controller.findBooks(5,6,5.33));
 
+//        System.out.println(controller.addBook("HUCK",23.33,33, 2,6));
+//        System.out.println(controller.editBook("just", "HUK",3.33,3,5,7));
+//        System.out.println(controller.deleleBook("HUCK"));
+//        System.out.println(controller.findBook("HUK"));
+//
+//        System.out.println(controller.minCoastBook());
+////
         SimpleGUI app = new SimpleGUI();
         app.setVisible(true);
 //        HashMap<Integer, Book> books = new HashMap<Integer, Book>();

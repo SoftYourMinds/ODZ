@@ -5,13 +5,15 @@ import java.util.ArrayList;
 public class Controller { // методи додавання редагування видалення перегляду
 
     Model model = new Model();
+    View view = new View();
 
     public String addBook(String name, Double coast, int number, int minOld, int maxOld){
-        String result = "New book successfully add to database...";
+        String result = "<html><font color ='green'>New book successfully add to database...</font></html>";
+
 
         ArrayList<String> books = new ArrayList<String>();
         String dataCheked = model.readDataBase();
-        if(dataCheked == "") { // проверка на наличие данных в бд
+        if((dataCheked == "")&&(name =="")) { // проверка на наличие данных в бд и на то что б имя не было пустым
             String[] booksSplit = dataCheked.split("/");
 
             for (int i = 0; i < booksSplit.length; i++) {
@@ -48,7 +50,7 @@ public class Controller { // методи додавання редагуван�
         String data = model.readDataBase();
         int chekTrueOldName = 0;
         String chekingRepeats = "norepeats";
-        if(data != ""){ // проверка на наличие данных в бд
+        if((data != "")&&(oldName!="")&&(newName!="")){ // проверка на наличие данных в бд
             String[] booksSplit = data.split("/");
 
             for(int i = 0; i < booksSplit.length; i++){
@@ -59,7 +61,7 @@ public class Controller { // методи додавання редагуван�
                 String[] bookZoom = books.get(i).split("~");
                 String name = bookZoom[0];
                 if (name.equals(oldName) == true) {
-                     books.set(i, newName + "~" + newCoast + "~" + newNumber + "~" + newMaxOld + "~" + newMaxOld);
+                     books.set(i, newName + "~" + newCoast + "~" + newNumber + "~" + newMinOld + "~" + newMaxOld);
                      chekTrueOldName = 1;
                 }
                 if(name.equals(newName) == true){
@@ -136,7 +138,7 @@ public class Controller { // методи додавання редагуван�
         return result;
     }
 
-    public String getBook(String name){
+    public String findBook(String name){
         ArrayList<String> books = new ArrayList<String>();
         String result = "true";
         int getNameDone = 0;
@@ -156,16 +158,83 @@ public class Controller { // методи додавання редагуван�
                 }
             }
         } else {
-            result = "DataBase is empty, please add new books";//или бд пустая
+            result = "false"; // database is empty
         }
         if(getNameDone == 0){
-            result = "Sorry we haven't this book";// или там нет такой книги
+            result = "false";// или там нет такой книги
         }
-        return result;
+        return view.viewBook(result);
     }
 
 
+    public String findBooks(int a, int b, double c){
+        String output = "";
+        ArrayList<String> books = new ArrayList<String>();
+        ArrayList<String> searchesBooks = new ArrayList<String>();
 
+        String dataCheked = model.readDataBase();
+        if(dataCheked != "") { // проверка на наличие данных в бд
+            String[] booksSplit = dataCheked.split("/");
+            for (int i = 0; i < booksSplit.length; i++) {
+                books.add(i, booksSplit[i]);
+            }
+            for (int i = 0; i < books.size(); i++) {
+                String[] bookZoom = books.get(i).split("~");
+                double c1 = (Double.valueOf(bookZoom[1]));
+                int b1 = Integer.parseInt(bookZoom[4]);
+                int a1 = Integer.parseInt(bookZoom[3]);
+
+                if ((a <= a1)&&(b >= b1)&&(c >= c1)) {
+                    searchesBooks.add(books.get(i));
+                }
+            }
+            if(searchesBooks.size() > 0) {
+                for (int i = 0; i < searchesBooks.size(); i++) {
+                    output = output + searchesBooks.get(i) + "/";
+                }
+
+            }
+            else{
+                output = "false";
+            }
+        }
+        else{
+            output = "false";
+        }
+        return view.viewBooks(output);
+    }
+
+    public String minCoastBook(){
+        String output = "";
+        ArrayList<String> books = new ArrayList<String>();
+        ArrayList<String> searchesBooks = new ArrayList<String>();
+
+        String dataCheked = model.readDataBase();
+        if(dataCheked != "") { // проверка на наличие данных в бд
+            String[] booksSplit = dataCheked.split("/");
+            for (int i = 0; i < booksSplit.length; i++) {
+                books.add(i, booksSplit[i]);
+            }
+            Double[] coasts = new Double[books.size()];
+            for (int i = 0; i < books.size(); i++) {
+                String[] bookZoom = books.get(i).split("~");
+                coasts[i]=Double.valueOf(bookZoom[1]);
+            }
+            double min = coasts[0];
+            for(int i = 0; i<books.size(); i++) {
+                if(coasts[i] < min) min = coasts[i];
+            }
+            int index =0;
+            for(int i = 0; i<books.size(); i++) {
+                if(coasts[i] == min) index = i;
+            }
+            output = view.viewBook(books.get(index));
+        }
+        else{
+            output = "false";
+        }
+        return output;
+    }
 
 
 }
